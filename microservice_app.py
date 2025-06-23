@@ -26,13 +26,16 @@ app = Flask(__name__)
 @app.route('/predict', methods=['POST'])
 def predict():
     try:
-        input_data = request.json['input']  # Shape: [sequence_len, sensors]
+        input_data = request.json['input']  # Expects shape: [sequence_len, num_features]
         input_array = np.array(input_data).astype(np.float32)
         input_tensor = torch.tensor(input_array).unsqueeze(0)  # Add batch dimension
 
+        # Debug log for Render logs
+        print("Input tensor shape:", input_tensor.shape)
+
         with torch.no_grad():
             output = model(input_tensor)
-            prediction = output.numpy().tolist()[0]  # First batch, full sensor prediction
+            prediction = output.numpy().tolist()[0]  # First item in batch
 
         return jsonify({"prediction": prediction})
     except Exception as e:
