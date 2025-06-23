@@ -1,0 +1,1 @@
+web: python microservice_app.py
